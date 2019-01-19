@@ -3,6 +3,7 @@
 from flask import Flask, request, jsonify
 import os, random
 import cek
+import random
 
 app = Flask(__name__)
 
@@ -37,11 +38,14 @@ def launch_request_handler(clova_request):
 @clova.handle.intent("SupportIntent")
 def play_sound_intent_handler(clova_request):
     app.logger.info("Intent started")
-    message = cek.Message(message="赤ちゃんが落ち着く音を再生します。", language="ja")
-    sound_url = cek.URL("https://s3-ap-northeast-1.amazonaws.com/takecian-clova/plastic_sound.mp3")
-    response = clova.response([message, sound_url, sound_url, sound_url, sound_url])
+    message = cek.Message(message=get_support_message(), language="ja")
+    response = clova.response([message])
     return response
 
+
+def get_support_message():
+    messages = ["毎日頑張ってますね、あまり無理しないでくださいね。", "いつも側で応援していますよ、今日も頑張ってくださいね。"]
+    return random.choice(messages)
 
 @clova.handle.end
 def end_handler(clova_request):
